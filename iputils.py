@@ -48,7 +48,7 @@ def to_range(ip_start, ip_end):
 
 '''
 @ip_ranges 待排序的ip range列表。ip range 格式为：192.168.0.1/24
-@return    排好序的 ip range.
+@return    范围从小到达排序的 ip range.
 '''
 def range_sort(ip_ranges):
     range_dict = {}
