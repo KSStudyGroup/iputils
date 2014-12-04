@@ -64,8 +64,53 @@ def range_sort(ip_ranges):
         res.extend(v)
     return res
 
+'''
+@ip  需要转化为数字的IP地址
+'''
+def ip2num(ip):
+    return struct.unpack('!I', socket.inet_aton(ip))[0]
+
+
+'''
+@ip  需要检测的IP地址
+'''
+def valid_ip(ip):
+    ip_arr = ip.split('.')
+    if len(ip_arr) != 4:
+        return False
+    for i in ip_arr:
+        if int(i) >= 0 and int(i) <= 255:
+            continue
+        else:
+            return False
+    return True
+
+'''
+@ip_range 检测ip_range是否正确
+          192.168.0.0/24 中的192.168.0.0必须是ip段中的第一个地址。
+          例如：192.168.0.0/24 不可以写为 192.168.0.1/24
+'''
+def valid_ip_range(ip_range):
+    ip, irange = ip_range.split('/', 2)
+    if not valid_ip(ip):
+        return False
+    if int(irange) < 0 or int(irange) > 32:
+        return False
+    mask = 0
+    tmp = int(irange)
+    while tmp > 0:
+        mask = (mask << 1) + 1
+        tmp = tmp - 1
+    mask = mask << (32 - int(irange))
+    ipnum = ip2num(ip)
+    if (ipnum & mask) != ipnum:
+        return False
+    return True
+
+
 if __name__ == '__main__':
     import sys
     #print ip_list(sys.argv[1], sys.argv[2])
-    print to_range(sys.argv[1], sys.argv[2])
+    #print to_range(sys.argv[1], sys.argv[2])
     #print range_sort(['192.168.0.1/32', '192.168.0.1/24'])
+    print valid_ip_range(sys.argv[1])
